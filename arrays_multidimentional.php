@@ -21,11 +21,30 @@
     $data = json_decode($data, true);
     // var_dump($data);
 
+    $error = false;
+
     if(isset($_GET['keyword'])) {
         $keyword = $_GET['keyword'];
         // $index = '';
-        $index = array_search($keyword, array_column($data, 'first_name'));
-        $data = [$data[$index]];
+
+        // Cari index array berdasarkan kolom first_name
+        $index1 = array_search($keyword, array_column($data, 'first_name'));
+        
+        
+        // Cari index array  berdasarkan kolom last_name
+        $index2 = array_search($keyword, array_column($data, 'last_name'));
+        
+        // Apabila index array didapatkan
+        if(is_numeric($index1)) {
+            $data = [$data[$index1]];
+        } else if(is_numeric($index2)) {
+            $data = [$data[$index2]];
+        } else {
+            $error = true;
+        }
+        // if($index) {
+        //     $data = [$data[$index]];
+        // }
         
     }
 
@@ -77,7 +96,8 @@
     </nav>
 
     <div class="container">
-        <div class="row">
+        <div class="row pt-5">
+        <?php if($error == false): ?>
             <?php foreach($data as $row): ?>
             <div class="col mt-3">
                 <div class="card" style="width: 18rem;">
@@ -90,6 +110,9 @@
                 </div>
             </div>
             <?php endforeach; ?>
+        <?php else: ?>
+            <h5 class="text-center">Maaf, data tidak ditemukan.</h5>
+        <?php endif; ?>
         </div>
     </div>
 
